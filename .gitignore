@@ -1,0 +1,7 @@
+/.vs/
+/.vscode/
+
+*.user
+
+/[bB]in/
+/[oO]bj/
