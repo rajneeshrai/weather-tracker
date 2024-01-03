@@ -3,5 +3,7 @@
 
 *.user
 
-/[bB]in/
-/[oO]bj/
+[bB]in/
+[oO]bj/
+src/[bB]in/
+src/[oO]bj/
