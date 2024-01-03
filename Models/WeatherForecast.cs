@@ -1,7 +1,8 @@
-namespace weather_tracker;
+namespace weather_tracker.Models;
 
 public class WeatherForecast
 {
+    public Weather[]? Weather { get; set; }
     public DateOnly Date { get; set; }
 
     public int TemperatureC { get; set; }

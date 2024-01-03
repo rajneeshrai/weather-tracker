@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using weather_tracker.Models;
+using weather_tracker.Services;
 
 namespace weather_tracker.Controllers;
 
@@ -12,21 +14,29 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly IGeoCodingService _geoCodingService;
+    private readonly IWeatherTrackerService _weatherTrackerService;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IGeoCodingService geoCodingService, IWeatherTrackerService weatherTrackerService)
     {
         _logger = logger;
+        this._geoCodingService = geoCodingService;
+        this._weatherTrackerService = weatherTrackerService;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    public async Task<WeatherForecast?> Get(string cityName)
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        this._logger.LogInformation("Start method Get");
+        WeatherForecast? weather = null;
+        var geoLocation = await this._geoCodingService.GetCoordinatesByLocationNameAsync(cityName);
+        var coordinates = geoLocation?.FirstOrDefault();
+        if (coordinates != null)
         {
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+            weather = await _weatherTrackerService.GetCurrentWeatherAsync(coordinates.Lat, coordinates.Lon);
+        }
+
+        this._logger.LogInformation("End method Get");
+        return weather;
     }
 }
