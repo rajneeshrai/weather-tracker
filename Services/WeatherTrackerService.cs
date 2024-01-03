@@ -24,6 +24,12 @@ namespace weather_tracker.Services
                             .Replace("{lat}", lat.ToString())
                             .Replace("{lon}", lon.ToString())
                             .Replace("{api-key}", this._appSettings.ApiKey);
+            //var httpClientHandler = new HttpClientHandler
+            //{
+            //    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            //};
+
+            //var httpClient = new HttpClient(httpClientHandler);
             var response = await this._httpClient.GetAsync(url);
             var weather = JsonConvert.DeserializeObject<WeatherForecast?>(await response.Content.ReadAsStringAsync());
             this._logger.LogInformation("End method GetCurrentWeatherAsync");
