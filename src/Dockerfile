@@ -4,11 +4,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-RUN apt-get update \
-    && apt-get install -y ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-COPY weather-tracker.crt /usr/local/share/ca-certificates/weather-tracker.crt
-RUN update-ca-certificates
+COPY ./weather-tracker.crt /usr/local/share/ca-certificates/weather-tracker.crt
+RUN chmod 755 /usr/local/share/ca-certificates/weather-tracker.crt && update-ca-certificates
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
